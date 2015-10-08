@@ -56,11 +56,16 @@ USE_DEVICE_SPECIFIC_CAMERA := true
 BOARD_HARDWARE_CLASS += device/samsung/sltecan/cmhw
 BOARD_HARDWARE_CLASS += hardware/samsung/cmhw
 
+# GPS
+TARGET_NO_RPC := true
+TARGET_GPS_HAL_PATH := device/samsung/sltecan/gps
+
 # Lights
 TARGET_PROVIDES_LIBLIGHT := true
 
 # NFC
 BOARD_NFC_CHIPSET := pn547
+BOARD_NFC_HAL_SUFFIX := msm8974
 
 # Partitions
 BOARD_FLASH_BLOCK_SIZE := 131072

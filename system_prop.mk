@@ -36,7 +36,8 @@ PRODUCT_PROPERTY_OVERRIDES += \
     persist.radio.add_power_save=1 \
     persist.radio.lte_vrat_report=1 \
     ro.telephony.mms_data_profile=5 \
-    ro.telephony.ril_class=SlteRIL
+    ro.telephony.ril_class=SlteRIL \
+    ro.vendor.extension_library=libqti-perfd-client.so
 
 # Sensors
 PRODUCT_PROPERTY_OVERRIDES += \
