@@ -75,11 +75,11 @@
 	<ctl name="LINEOUT2 Volume" value="0" />
 	<ctl name="LINEOUT3 Volume" value="0" />
 	<ctl name="LINEOUT4 Volume" value="0" />
-	
+
 	<ctl name="SPK DRV Volume" value="0" />
 
 	<ctl name="EAR PA Gain" value="POS_0_DB" />
-	
+
 	<ctl name="DAC1 Switch" value="0" />
 
 	<ctl name="COMP0 Switch" value="0" />
@@ -263,7 +263,7 @@
 		<ctl name="AUX_PCM_RX_Voice Mixer Voip" value="1" />
 		<ctl name="Voip_Tx Mixer AUX_PCM_TX_Voip" value="1" />
 	</path>
-	
+
 	<path name="incall-rec-uplink">
 		<ctl name="MultiMedia1 Mixer VOC_REC_UL" value="1" />
 	</path>
@@ -275,7 +275,7 @@
 	<path name="incall-rec-uplink-and-downlink">
 		<ctl name="MultiMedia1 Mixer VOC_REC_UL" value="1" />
 		<ctl name="MultiMedia1 Mixer VOC_REC_DL" value="1" />
-	</path>	
+	</path>
 	<!-- end of Verb -->
 
 	<!-- ================================================================ -->
@@ -316,7 +316,7 @@
 		<ctl name="RX3 MIX1 INP1" value="RX2" />
 		<ctl name="RX5 MIX1 INP1" value="RX1" />
 	</path>
-	
+
 	<path name="spk-lineout">
 		<ctl name="SLIM RX1 MUX" value="AIF1_PB" />
 		<ctl name="SLIM RX2 MUX" value="AIF1_PB" />
@@ -801,7 +801,7 @@
 	</path>
 	<!-- end of Voice call Scenario  -->
 
-	<!-- ================================================================ -->	
+	<!-- ================================================================ -->
 	<!-- call forward Scenario -->
 	<path name="voice-call-forward">
 		<ctl name="SLIM RX1 MUX" value="AIF1_PB" />
@@ -811,7 +811,7 @@
 		<ctl name="EAR PA Gain" value="POS_6_DB" />
 		<ctl name="RX1 Digital Volume" value="0" />
 	</path>
-	
+
 	<path name="voice-call-forward-mic">
 		<ctl name="AIF1_CAP Mixer SLIM TX7" value="1" />
 		<ctl name="SLIM_0_TX Channels" value="One" />
@@ -1504,7 +1504,7 @@
 		<ctl name="ADC1 Volume" value="13" />
 		<ctl name="DEC6 Volume" value="84" />
 		<ctl name="ES705-AP Tx Channels" value="One" />
-		<ctl name="Internal Route Config" value="19" />	
+		<ctl name="Internal Route Config" value="19" />
 	</path>
 
 	<path name="loopback-headphone-sub-mic-DSP">
