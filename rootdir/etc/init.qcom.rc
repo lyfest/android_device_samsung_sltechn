@@ -1112,7 +1112,7 @@ on boot
    chown system system /sys/class/camera/front/front_camtype
 
     # NFC_NXP
-    #setprop ro.nfc.port "I2C"
+    setprop ro.nfc.port "I2C"
     chmod 0660 /dev/pn547
     chown nfc nfc /dev/pn547
     symlink /dev/pn547 /dev/pn544
