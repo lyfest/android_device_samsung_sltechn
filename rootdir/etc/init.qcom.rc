@@ -1387,13 +1387,12 @@ service qcamerasvr /system/bin/mm-qcamera-daemon
 #    start qrngd
 
 service qseecomd /system/bin/qseecomd
-    #class core
-    class late_start
+    class core
     user root
     group system
 
 service mpdecision /system/bin/mpdecision --avg_comp
-    #class main
+    class main
     user root
     group system
     disabled
@@ -1404,8 +1403,7 @@ service mpdecision /system/bin/mpdecision --avg_comp
 #    disabled
 
 service thermal-engine /system/bin/thermal-engine
-    #class main
-    class core
+    class main
     user root
     group radio system
 
@@ -1444,7 +1442,10 @@ service audiod /system/bin/audiod
 service rmt_storage /system/bin/rmt_storage
     class core
     user root
-    #disabled
+    disabled
+
+on property:ro.boot.emmc=true
+    start rmt_storage
 
 service rfs_access /system/bin/rfs_access
     class core
@@ -1467,7 +1468,7 @@ service qmuxd /system/bin/qmuxd
 
 service netmgrd /system/bin/netmgrd
     class main
-    #disabled
+    disabled
 
 on property:ro.use_data_netmgrd=false
     # netmgr not supported on specific target
