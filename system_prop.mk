@@ -1,12 +1,18 @@
 # Audio
 PRODUCT_PROPERTY_OVERRIDES += \
-    av.offload.enable=false \
     persist.audio.fluence.speaker=true \
     persist.audio.fluence.voicecall=true \
     persist.audio.fluence.voicerec=false \
     ro.qc.sdk.audio.fluencetype=fluence \
     use.voice.path.for.pcm.voip=false \
-    use.dedicated.device.for.voip=true
+    use.dedicated.device.for.voip=true \
+    audio.offload.buffer.size.kb=32 \
+    av.offload.enable=true \
+    av.streaming.offload.enable=true \
+    audio.offload.multiple.enabled=false \
+    audio.offload.gapless.enabled=true \
+    audio.offload.pcm.16bit.enable=true \
+    audio.offload.pcm.24bit.enable=true
 
 # Camera
 PRODUCT_PROPERTY_OVERRIDES += \
@@ -30,14 +36,23 @@ PRODUCT_PROPERTY_OVERRIDES += \
 PRODUCT_PROPERTY_OVERRIDES += \
     ro.nfc.port=I2C
 
+# Perf
+PRODUCT_PROPERTY_OVERRIDES += \
+    ro.vendor.extension_library=/vendor/lib/libqti-perfd-client.so
+
 # Radio
 PRODUCT_PROPERTY_OVERRIDES += \
-    persist.data.netmgrd.qos.enable=true \
+    ro.use_data_netmgrd=false \
+    persist.data.netmgrd.qos.enable=false \
     persist.radio.add_power_save=1 \
-    persist.radio.lte_vrat_report=1 \
-    ro.telephony.mms_data_profile=5 \
+    persist.radio.apm_sim_not_pwdn=1 \
+    persist.radio.no_wait_for_card=1 \
+    persist.radio.mode_pref_nv10=1 \
+    persist.radio.jbims=1 \
+    persist.eons.enabled=true \
     ro.telephony.ril_class=SlteRIL \
-    ro.vendor.extension_library=libqti-perfd-client.so
+    ro.telephony.default_network=9 \
+    telephony.lteOnGsmDevice=1
 
 # Sensors
 PRODUCT_PROPERTY_OVERRIDES += \
@@ -46,6 +61,10 @@ PRODUCT_PROPERTY_OVERRIDES += \
 # Tethering
 PRODUCT_PROPERTY_OVERRIDES += \
     net.tethering.noprovisioning=true
+
+# USB OTG interface
+PRODUCT_PROPERTY_OVERRIDES += \
+    persist.sys.isUsbOtgEnabled=true
 
 # WiFi
 PRODUCT_PROPERTY_OVERRIDES += \

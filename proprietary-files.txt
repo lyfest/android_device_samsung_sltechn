@@ -1,10 +1,4 @@
 # Audio
-vendor/lib/libacdbloader.so
-vendor/lib/libacdbmapper.so
-vendor/lib/libacdbrtac.so
-vendor/lib/libadiertac.so
-vendor/lib/libaudcal.so
-vendor/lib/libaudioalsa.so
 etc/firmware/audience-es705-fw.bin
 etc/firmware/audience-es705-vs.bin
 etc/Bluetooth_cal.acdb
@@ -14,6 +8,14 @@ etc/Handset_cal.acdb
 etc/Hdmi_cal.acdb
 etc/Headset_cal.acdb
 etc/Speaker_cal.acdb
+lib/libaudio-ril.so
+lib/libmysound.so
+vendor/lib/libacdbloader.so
+vendor/lib/libacdbmapper.so
+vendor/lib/libacdbrtac.so
+vendor/lib/libadiertac.so
+vendor/lib/libaudcal.so
+vendor/lib/libaudioalsa.so
 vendor/lib/soundfx/libqcbassboost.so
 vendor/lib/soundfx/libqcreverb.so
 vendor/lib/soundfx/libqcvirt.so
@@ -227,6 +229,14 @@ etc/sec_config
 # IPv6 Tethering
 bin/radish
 
+# Keystore stuffs
+vendor/lib/lib-sec-disp.so
+vendor/lib/libSecureUILib.so
+vendor/lib/libStDrvInt.so
+vendor/lib/libsecureui.so
+vendor/lib/libsecureui_svcsock.so
+vendor/lib/libsecureuisvc_jni.so
+
 # Listen service
 -vendor/lib/liblisten.so
 vendor/lib/liblistenhardware.so
@@ -247,6 +257,11 @@ vendor/lib/libOmxEvrcDec.so
 vendor/lib/libOmxQcelp13Dec.so
 vendor/lib/libOmxWmaDec.so
 vendor/lib/libSHIMDivxDrm.so
+
+# MobiCore
+#bin/mcDriverDaemon
+#bin/mcStarter
+#lib/libMcClient.so
 
 # NFC
 vendor/firmware/libpn547_fw.so
@@ -278,11 +293,17 @@ bin/ks
 bin/netmgrd
 bin/qcks
 bin/qmuxd
+#bin/qmiproxy
+#bin/qosmgr
+#bin/qrngd
 bin/rfs_access
 bin/rild
 bin/rmt_storage
+bin/rmnetcli
+#etc/qosmgr_rules.xml
 lib/libreference-ril.so
 lib/libril.so
+lib/librmnetctl.so
 lib/libsec-ril.so
 lib/libsecnativefeature.so
 lib/libsecril-client.so
@@ -344,13 +365,7 @@ etc/wifi/wpa_supplicant.conf
 #vendor/lib/libqcgesture.so
 #vendor/lib/libqcsyncgesture.so
 #vendor/lib/librmp.so
-#vendor/lib/lib-sec-disp.so
-#vendor/lib/libsecureui.so
-#vendor/lib/libsecureui_svcsock.so
-#vendor/lib/libSecureUILib.so
-#vendor/lib/libsecureuisvc_jni.so
 #vendor/lib/libSSEPKCS11.so
-#vendor/lib/libStDrvInt.so
 #vendor/lib/libsubsystem_control.so
 #vendor/lib/libSubSystemShutdown.so
 #vendor/lib/libsyncgesadapter.so
