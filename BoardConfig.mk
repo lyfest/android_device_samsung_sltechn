@@ -39,7 +39,7 @@ TARGET_KERNEL_SOURCE := kernel/samsung/sltecan
 
 
 # Audio
-AUDIO_FEATURE_LOW_LATENCY_PRIMARY := true
+BOARD_USES_ALSA_AUDIO := true
 
 # Bluetooth
 BOARD_BLUEDROID_VENDOR_CONF := $(LOCAL_PATH)/bluetooth/vnd_sltecan.txt
