@@ -310,6 +310,11 @@ on post-fs-data
 
     ####
 
+    # ASoC ES705 (no sleep)
+    chown system system /sys/devices/fe12f000.slim/es705-codec-gen0/sleep_delay
+    chmod 0660 /sys/devices/fe12f000.slim/es705-codec-gen0/sleep_delay
+    write /sys/devices/fe12f000.slim/es705-codec-gen0/sleep_delay -1
+
     # drm and related files in EFS
     mkdir /efs/drm 0774 drm system
     mkdir /efs/drm/sdrm 0774 drm system
