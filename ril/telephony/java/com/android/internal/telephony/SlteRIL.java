@@ -30,7 +30,6 @@ import com.android.internal.telephony.cdma.CdmaInformationRecords.CdmaSignalInfo
 import com.android.internal.telephony.cdma.SignalToneUtil;
 import com.android.internal.telephony.uicc.IccCardApplicationStatus;
 import com.android.internal.telephony.uicc.IccCardStatus;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -39,7 +38,7 @@ import java.util.Collections;
  *
  * {@hide}
  */
-public class SlteRIL extends RIL implements CommandsInterface {
+public class SlteRIL extends RIL {
 
     private static final int RIL_REQUEST_DIAL_EMERGENCY = 10016;
     private static final int RIL_REQUEST_DIAL_EMERGENCY_LL = 10001;
@@ -51,13 +50,17 @@ public class SlteRIL extends RIL implements CommandsInterface {
     private static final int RIL_REQUEST_ACTIVATE_DATA_CALL = 11037;
     private static final int RIL_UNSOL_ON_SS_LL = 11055;
 
-    public SlteRIL(Context context, int preferredNetworkType,
-            int cdmaSubscription, Integer instanceId) {
-        this(context, preferredNetworkType, cdmaSubscription);
-    }
+    private boolean mIsGsm = true;
+    private boolean isLollipopRadio = true;
 
     public SlteRIL(Context context, int networkMode, int cdmaSubscription) {
-        super(context, networkMode, cdmaSubscription);
+        super(context, networkMode, cdmaSubscription, null);
+        mQANElements = 6;
+    }
+
+    public SlteRIL(Context context, int preferredNetworkType,
+            int cdmaSubscription, Integer instanceId) {
+        super(context, preferredNetworkType, cdmaSubscription, instanceId);
         mQANElements = 6;
     }
 
@@ -88,19 +91,6 @@ public class SlteRIL extends RIL implements CommandsInterface {
 
         if (RILJ_LOGD) riljLog(rr.serialString() + "> " + requestToString(rr.mRequest));
 
-        send(rr);
-    }
-
-    @Override
-    public void
-    acceptCall (Message result) {
-        RILRequest rr
-                = RILRequest.obtain(RIL_REQUEST_ANSWER, result);
-
-        if (RILJ_LOGD) riljLog(rr.serialString() + "> " + requestToString(rr.mRequest));
-
-        rr.mParcel.writeInt(1);
-        rr.mParcel.writeInt(0);
         send(rr);
     }
 
@@ -142,6 +132,40 @@ public class SlteRIL extends RIL implements CommandsInterface {
 
             cardStatus.mApplications[i] = appStatus;
         }
+
+        // For Sprint LTE only SIM
+        if (appStatus != null
+                && numApplications == 1
+                && !mIsGsm
+                && appStatus.app_type == appStatus.AppTypeFromRILInt(2)) {
+            cardStatus.mApplications = new IccCardApplicationStatus[3];
+            cardStatus.mApplications[0] = appStatus;
+            cardStatus.mGsmUmtsSubscriptionAppIndex = 0;
+            cardStatus.mCdmaSubscriptionAppIndex = 1;
+            cardStatus.mImsSubscriptionAppIndex = 2;
+
+            IccCardApplicationStatus appStatus2 = new IccCardApplicationStatus();
+            appStatus2.app_type       = appStatus2.AppTypeFromRILInt(4); // csim state
+            appStatus2.app_state      = appStatus.app_state;
+            appStatus2.perso_substate = appStatus.perso_substate;
+            appStatus2.aid            = appStatus.aid;
+            appStatus2.app_label      = appStatus.app_label;
+            appStatus2.pin1_replaced  = appStatus.pin1_replaced;
+            appStatus2.pin1           = appStatus.pin1;
+            appStatus2.pin2           = appStatus.pin2;
+            cardStatus.mApplications[cardStatus.mCdmaSubscriptionAppIndex] = appStatus2;
+
+            IccCardApplicationStatus appStatus3 = new IccCardApplicationStatus();
+            appStatus3.app_type       = appStatus3.AppTypeFromRILInt(5); // ims state
+            appStatus3.app_state      = appStatus.app_state;
+            appStatus3.perso_substate = appStatus.perso_substate;
+            appStatus3.aid            = appStatus.aid;
+            appStatus3.app_label      = appStatus.app_label;
+            appStatus3.pin1_replaced  = appStatus.pin1_replaced;
+            appStatus3.pin1           = appStatus.pin1;
+            appStatus3.pin2           = appStatus.pin2;
+            cardStatus.mApplications[cardStatus.mImsSubscriptionAppIndex] = appStatus3;
+        }
         return cardStatus;
     }
 
@@ -172,16 +196,24 @@ public class SlteRIL extends RIL implements CommandsInterface {
             dc.als = p.readInt();
             voiceSettings = p.readInt();
             dc.isVoice = (0 != voiceSettings);
-            //boolean isVideo = (0 != p.readInt());   // Samsung CallDetail
-            int call_type = p.readInt();            // Samsung CallDetails
-            int call_domain = p.readInt();          // Samsung CallDetails
-            String csv = p.readString();            // Samsung CallDetails
+            if (mIsGsm) {
+                boolean isVideo;
+                if (!isLollipopRadio)
+                    isVideo = (0 != p.readInt());       // Samsung CallDetails
+                int call_type = p.readInt();            // Samsung CallDetails
+                int call_domain = p.readInt();          // Samsung CallDetails
+                String csv = p.readString();            // Samsung CallDetails
+            }
             dc.isVoicePrivacy = (0 != p.readInt());
             dc.number = p.readString();
             int np = p.readInt();
             dc.numberPresentation = DriverCall.presentationFromCLIP(np);
             dc.name = p.readString();
-            dc.namePresentation = DriverCall.presentationFromCLIP(p.readInt());
+            if (!isLollipopRadio) {
+                dc.namePresentation = p.readInt();
+            } else {
+                dc.namePresentation = DriverCall.presentationFromCLIP(p.readInt());
+            }
             int uusInfoPresent = p.readInt();
             if (uusInfoPresent == 1) {
                 dc.uusInfo = new UUSInfo();
@@ -244,7 +276,6 @@ public class SlteRIL extends RIL implements CommandsInterface {
         int lteCqi = p.readInt();
         int tdScdmaRscp = p.readInt();
         // constructor sets default true, makeSignalStrengthFromRilParcel does not set it
-        boolean isGsm = true;
 
         if ((lteSignalStrength & 0xff) == 255 || lteSignalStrength == 99) {
             lteSignalStrength = 99;
@@ -262,11 +293,36 @@ public class SlteRIL extends RIL implements CommandsInterface {
                     " evdoEcio: " + evdoEcio + " evdoSnr:" + evdoSnr +
                     " lteSignalStrength:" + lteSignalStrength + " lteRsrp:" + lteRsrp +
                     " lteRsrq:" + lteRsrq + " lteRssnr:" + lteRssnr + " lteCqi:" + lteCqi +
-                    " tdScdmaRscp:" + tdScdmaRscp + " isGsm:" + (isGsm ? "true" : "false"));
+                    " tdScdmaRscp:" + tdScdmaRscp + " isGsm:" + (mIsGsm ? "true" : "false"));
 
         return new SignalStrength(gsmSignalStrength, gsmBitErrorRate, cdmaDbm, cdmaEcio, evdoDbm,
                 evdoEcio, evdoSnr, lteSignalStrength, lteRsrp, lteRsrq, lteRssnr, lteCqi,
-                tdScdmaRscp, isGsm);
+                tdScdmaRscp, mIsGsm);
+    }
+
+    @Override
+    protected void notifyRegistrantsCdmaInfoRec(CdmaInformationRecords infoRec) {
+        final int response = RIL_UNSOL_CDMA_INFO_REC;
+
+        if (infoRec.record instanceof CdmaSignalInfoRec) {
+            CdmaSignalInfoRec rec = (CdmaSignalInfoRec) infoRec.record;
+            if (rec != null
+                    && rec.isPresent
+                    && rec.signalType == SignalToneUtil.IS95_CONST_IR_SIGNAL_IS54B
+                    && rec.alertPitch == SignalToneUtil.IS95_CONST_IR_ALERT_MED
+                    && rec.signal == SignalToneUtil.IS95_CONST_IR_SIG_IS54B_L) {
+                /* Drop record, otherwise IS95_CONST_IR_SIG_IS54B_L tone will
+                 * continue to play after the call is connected */
+                return;
+            }
+        }
+        super.notifyRegistrantsCdmaInfoRec(infoRec);
+    }
+
+    @Override
+    public void setPhoneType(int phoneType) {
+        super.setPhoneType(phoneType);
+        //mIsGsm = (phoneType != RILConstants.CDMA_PHONE);
     }
 
     @Override
@@ -276,35 +332,28 @@ public class SlteRIL extends RIL implements CommandsInterface {
         int dataPosition = p.dataPosition(); // save off position within the Parcel
         int response = p.readInt();
 
-        int newResponse = response;
-        switch(response) {
-            case RIL_UNSOL_ON_SS_LL:
-                newResponse = RIL_UNSOL_ON_SS;
-                break;
-        }
-        if (newResponse != response) {
-            p.setDataPosition(dataPosition);
-            p.writeInt(newResponse);
+        if (isLollipopRadio) {
+            int newResponse = response;
+            switch(response) {
+                case RIL_UNSOL_ON_SS_LL:
+                    newResponse = RIL_UNSOL_ON_SS;
+                    break;
+            }
+            if (newResponse != response) {
+                p.setDataPosition(dataPosition);
+                p.writeInt(newResponse);
+            }
         }
 
         switch(response) {
-            case RIL_UNSOL_AM:
-                ret = responseString(p);
-                String amString = (String) ret;
-                Rlog.d(RILJ_LOG_TAG, "Executing AM: " + amString);
-
-                try {
-                    Runtime.getRuntime().exec("am " + amString);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    Rlog.e(RILJ_LOG_TAG, "am " + amString + " could not be executed.");
-                }
-                break;
             case RIL_UNSOL_RESPONSE_IMS_NETWORK_STATE_CHANGED:
                 ret = responseVoid(p);
                 break;
             case RIL_UNSOL_DEVICE_READY_NOTI:
                 ret = responseVoid(p);
+                break;
+            case RIL_UNSOL_AM:
+                ret = responseString(p);
                 break;
             case RIL_UNSOL_WB_AMR_STATE:
                 ret = responseInts(p);
@@ -324,13 +373,32 @@ public class SlteRIL extends RIL implements CommandsInterface {
         }
     }
 
+    @Override
+    public void
+    acceptCall (Message result) {
+        RILRequest rr
+                = RILRequest.obtain(RIL_REQUEST_ANSWER, result);
+
+        if (isLollipopRadio) {
+            rr.mParcel.writeInt(1);
+            rr.mParcel.writeInt(0);
+        }
+
+        if (RILJ_LOGD) riljLog(rr.serialString() + "> " + requestToString(rr.mRequest));
+
+        send(rr);
+    }
+
 
     private void
     dialEmergencyCall(String address, int clirMode, Message result) {
         RILRequest rr;
 
-        //rr = RILRequest.obtain(RIL_REQUEST_DIAL_EMERGENCY, result);
-        rr = RILRequest.obtain(RIL_REQUEST_DIAL_EMERGENCY_LL, result);
+        if (isLollipopRadio) {
+            rr = RILRequest.obtain(RIL_REQUEST_DIAL_EMERGENCY_LL, result);
+        } else {
+            rr = RILRequest.obtain(RIL_REQUEST_DIAL_EMERGENCY, result);
+        }
         rr.mParcel.writeString(address);
         rr.mParcel.writeInt(clirMode);
         rr.mParcel.writeInt(0);        // CallDetails.call_type
