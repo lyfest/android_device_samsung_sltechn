@@ -314,6 +314,7 @@ vendor/lib/libxml.so
 
 # Sensors
 bin/sensors.qcom
+etc/sensor_def_qcomdev.conf
 lib/hw/sensors.msm8974.so
 lib/libinvensense_hal.so
 lib/libmllite.so
