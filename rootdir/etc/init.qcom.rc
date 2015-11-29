@@ -868,6 +868,10 @@ on boot
     # Set the default message loglevel to KERN_INFO
     #write /proc/sys/kernel/printk "6 6 1 7"
 
+    # Adaptive LMK
+    write /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk 1
+    write /sys/module/lowmemorykiller/parameters/vmpressure_file_min 53059
+
     #### 
 
     # create symlink for fb1 as HDMI
