@@ -40,37 +40,15 @@ on early-init
     symlink /data/tombstones /tombstones
 
 on init
-    mkdir /mnt/shell/emulated 0700 shell shell
-    mkdir /storage 0550 system sdcard_r
-    mkdir /storage/emulated 0555 root root
-
-    mkdir /mnt/media_rw/usbdisk 0700 media_rw media_rw
-    mkdir /storage/usbdisk 0700 root root
-
-    export EXTERNAL_STORAGE /storage/emulated/legacy
-    export SECONDARY_STORAGE /storage/usbdisk
-    export EMULATED_STORAGE_SOURCE /mnt/shell/emulated
-    export EMULATED_STORAGE_TARGET /storage/emulated
-
-    # for backwards compatibility
-    symlink /storage/emulated/legacy /sdcard
-    symlink /storage/emulated/legacy /mnt/sdcard
-    symlink /storage/emulated/legacy /storage/sdcard0
-    symlink /mnt/shell/emulated/0 /storage/emulated/legacy
-    symlink /storage/usbdisk /usbdisk
-    symlink /storage/usbdisk /mnt/usbdisk
-
-    #Private Mode
-    mkdir /mnt/shell/privatemode 0700 system system
-    mkdir /storage/Private 0000 system system
+    # Support legacy paths
+    symlink /sdcard /mnt/sdcard
+    symlink /sdcard /storage/sdcard0
 
 on fs
     write /sys/devices/msm_sdcc.1/mmc_host/mmc1/power/control on
     write /sys/devices/msm_sdcc.3/mmc_host/mmc2/power/control on
 
     mount_all fstab.qcom
-
-    setprop ro.crypto.fuse_sdcard true
 
     #### init.target.rc
 
@@ -129,11 +107,7 @@ on post-fs-data
 
     #### init.qcom.rc
 
-    # we will remap this as /mnt/sdcard with the sdcard fuse tool
     mkdir /data/misc/camera 0770 camera camera
-
-    mkdir /data/media 0770 media_rw media_rw
-    chown media_rw media_rw /data/media
 
     mkdir /data/misc/bluetooth 0770 bluetooth bluetooth
 
@@ -1671,18 +1645,6 @@ service charger /charger
 service sec-sh /system/bin/sh /system/etc/init.sec.boot.sh
     class main
     user root
-    oneshot
-
-service sdcard /system/bin/sdcard -u 1023 -g 1023 -l /data/media /mnt/shell/emulated
-    class late_start
-
-service fuse_usbdisk /system/bin/sdcard -u 1023 -g 1023 /mnt/media_rw/usbdisk /storage/usbdisk
-    class late_start
-    disabled
-
-#Private Mode
-service privatemode /system/bin/sdcard /data/privatemode /mnt/shell/privatemode 1000 1000
-    class late_start
     oneshot
 
 on property:persist.sys.ssr.restart_level=1
