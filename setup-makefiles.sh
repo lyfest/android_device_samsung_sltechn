@@ -27,10 +27,10 @@ PRODUCT_COPY_FILES += \\
 EOF
 
 LINEEND=" \\"
-COUNT=`wc -l ../sltecan/proprietary-files.txt | awk {'print $1'}`
-DISM=`egrep -c '(^#|^$)' ../sltecan/proprietary-files.txt`
+COUNT=`wc -l proprietary-files.txt | awk {'print $1'}`
+DISM=`egrep -c '(^#|^$)' proprietary-files.txt`
 COUNT=`expr $COUNT - $DISM`
-for FILE in `egrep -v '(^#|^$)' ../sltecan/proprietary-files.txt`; do
+for FILE in `egrep -v '(^#|^$)' proprietary-files.txt`; do
   COUNT=`expr $COUNT - 1`
   if [ $COUNT = "0" ]; then
     LINEEND=""
