@@ -108,7 +108,7 @@ PRODUCT_COPY_FILES += \
 
 # Radio
 PRODUCT_PACKAGES += \
-    librilsym \
+    libril_shim \
     RadioWorkaround
 
 # Ramdisk
