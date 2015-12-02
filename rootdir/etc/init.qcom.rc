@@ -1642,6 +1642,9 @@ on property:sys.boot_completed=1
     write /sys/module/cpu_boost/parameters/input_boost_freq 1497600
     write /sys/module/cpu_boost/parameters/input_boost_ms 40
 
+    # Configure the devfreq governor
+    write /sys/class/kgsl/kgsl-3d0/devfreq/governor msm-adreno-tz
+
     # Post boot services
     start mpdecision
 
