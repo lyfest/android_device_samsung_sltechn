@@ -67,8 +67,6 @@ BOARD_NFC_DEVICE := /dev/pn547
 
 # Partitions
 BOARD_FLASH_BLOCK_SIZE := 131072
-TARGET_USERIMAGES_USE_EXT4 := true
-TARGET_USERIMAGES_USE_F2FS := true
 BOARD_BOOTIMAGE_PARTITION_SIZE := 13631488
 BOARD_RECOVERYIMAGE_PARTITION_SIZE := 15728640
 BOARD_SYSTEMIMAGE_PARTITION_SIZE := 2688548864
@@ -82,36 +80,49 @@ TARGET_POWERHAL_VARIANT := qcom
 # Radio
 BOARD_RIL_CLASS := ../../../device/samsung/sltecan/ril
 
+#TARGET_RECOVERY := twrp
 # Recovery
-BOARD_CUSTOM_RECOVERY_KEYMAPPING := ../../device/samsung/sltecan/recovery/recovery_keys.c
+ifneq ($(TARGET_RECOVERY),twrp)
 TARGET_RECOVERY_FSTAB := $(LOCAL_PATH)/rootdir/etc/fstab.qcom
-#
+BOARD_CUSTOM_RECOVERY_KEYMAPPING := ../../device/samsung/sltecan/recovery/recovery_keys.c
+endif
 BOARD_USE_CUSTOM_RECOVERY_FONT := \"roboto_23x41.h\"
-BOARD_USES_MMCUTILS := true
 BOARD_HAS_LARGE_FILESYSTEM := true
-BOARD_HAS_DOWNLOAD_MODE := true
 BOARD_HAS_NO_MISC_PARTITION := true
-BOARD_HAS_NO_REAL_SDCARD := true
 BOARD_HAS_NO_SELECT_BUTTON := true
 BOARD_RECOVERY_SWIPE := true
-
+BOARD_USES_MMCUTILS := true
+TARGET_USERIMAGES_USE_EXT4 := true
+TARGET_USERIMAGES_USE_F2FS := true
 # TWRP Recovery
-#TARGET_RECOVERY_FSTAB := $(LOCAL_PATH)/rootdir/etc/fstab.twrp
-#
-TW_THEME := portrait_mdpi
+ifeq ($(TARGET_RECOVERY),twrp)
+TARGET_RECOVERY_FSTAB := $(LOCAL_PATH)/rootdir/etc/fstab.twrp
+DEVICE_RESOLUTION := 720x1280
+BOARD_HAS_NO_REAL_SDCARD := true
+RECOVERY_SDCARD_ON_DATA := true
+RECOVERY_GRAPHICS_USE_LINELENGTH := true
+TARGET_RECOVERY_PIXEL_FORMAT := "RGBX_8888"
+TARGET_RECOVERY_QCOM_RTC_FIX := true
+TW_THEME := portrait_hdpi
 TW_BRIGHTNESS_PATH := "/sys/devices/mdp.0/qcom\x2cmdss_fb_primary.191/leds/lcd-backlight/brightness"
 TW_MAX_BRIGHTNESS := 255
 TW_NO_REBOOT_BOOTLOADER := true
 TW_HAS_DOWNLOAD_MODE := true
-TW_INCLUDE_CRYPTO := true
 TW_NO_EXFAT_FUSE := false
 TW_NO_EXFAT := false
-#
-TARGET_RECOVERY_PIXEL_FORMAT := "RGBX_8888"
-TARGET_RECOVERY_QCOM_RTC_FIX := true
-TARGET_USERIMAGES_USE_EXT4 := true
-RECOVERY_GRAPHICS_USE_LINELENGTH := true
-RECOVERY_SDCARD_ON_DATA := true
+TW_INTERNAL_STORAGE_PATH := "/data/media/0"
+TW_INTERNAL_STORAGE_MOUNT_POINT := "data"
+#TW_EXTERNAL_STORAGE_PATH := "/external_sd"
+#TW_EXTERNAL_STORAGE_MOUNT_POINT := "external_sd"
+TW_INCLUDE_CRYPTO := true
+#TW_INCLUDE_CRYPTO_SAMSUNG := true
+#TW_CRYPTO_FS_TYPE := "ext4"
+#TW_CRYPTO_REAL_BLKDEV := "/dev/block/mmcblk0p25"
+#TW_CRYPTO_MNT_POINT := "/data"
+#TW_CRYPTO_FS_OPTIONS := "nosuid,nodev,noatime,noauto_da_alloc,discard,journal_async_commit,errors=panic"
+#TW_CRYPTO_FS_FLAGS := "0x00000406"
+#TW_CRYPTO_KEY_LOC := "footer"
+endif
 
 # SELinux
 -include device/qcom/sepolicy/sepolicy.mk
