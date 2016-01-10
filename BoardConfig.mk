@@ -96,6 +96,12 @@ TARGET_USERIMAGES_USE_EXT4 := true
 TARGET_USERIMAGES_USE_F2FS := true
 # TWRP Recovery
 ifeq ($(TARGET_RECOVERY),twrp)
+ADDITIONAL_DEFAULT_PROPERTIES += \
+    ro.secure=0 \
+    ro.adb.secure=0 \
+    ro.allow.mock.location=1 \
+    ro.debuggable=1 \
+    persist.sys.usb.config=adb
 TARGET_RECOVERY_FSTAB := $(LOCAL_PATH)/rootdir/etc/fstab.twrp
 DEVICE_RESOLUTION := 720x1280
 BOARD_HAS_NO_REAL_SDCARD := true
@@ -110,6 +116,8 @@ TW_NO_REBOOT_BOOTLOADER := true
 TW_HAS_DOWNLOAD_MODE := true
 TW_NO_EXFAT_FUSE := false
 TW_NO_EXFAT := false
+TW_INCLUDE_FB2PNG := true
+TW_TARGET_USES_QCOM_BSP := true
 TW_INTERNAL_STORAGE_PATH := "/data/media/0"
 TW_INTERNAL_STORAGE_MOUNT_POINT := "data"
 #TW_EXTERNAL_STORAGE_PATH := "/external_sd"
