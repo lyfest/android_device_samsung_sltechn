@@ -19,18 +19,21 @@ package com.android.internal.telephony;
 import static com.android.internal.telephony.RILConstants.*;
 
 import android.content.Context;
-import android.telephony.Rlog;
+import android.media.AudioManager;
 import android.os.AsyncResult;
 import android.os.Message;
 import android.os.Parcel;
 import android.os.SystemProperties;
 import android.telephony.PhoneNumberUtils;
+import android.telephony.Rlog;
 import android.telephony.SignalStrength;
+
 import com.android.internal.telephony.cdma.CdmaInformationRecords;
 import com.android.internal.telephony.cdma.CdmaInformationRecords.CdmaSignalInfoRec;
 import com.android.internal.telephony.cdma.SignalToneUtil;
 import com.android.internal.telephony.uicc.IccCardApplicationStatus;
 import com.android.internal.telephony.uicc.IccCardStatus;
+
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -41,28 +44,27 @@ import java.util.Collections;
  */
 public class SlteRIL extends RIL {
 
-    private static final int RIL_REQUEST_DIAL_EMERGENCY = 10016;
     private static final int RIL_REQUEST_DIAL_EMERGENCY_LL = 10001;
-    private static final int RIL_UNSOL_DEVICE_READY_NOTI = 11008;
     private static final int RIL_UNSOL_AM = 11010;
     private static final int RIL_UNSOL_WB_AMR_STATE = 11017;
     private static final int RIL_UNSOL_RESPONSE_HANDOVER = 11021;
     private static final int RIL_UNSOL_SRVCC_HANDOVER = 11029;
-    private static final int RIL_REQUEST_ACTIVATE_DATA_CALL = 11037;
     private static final int RIL_UNSOL_ON_SS_LL = 11055;
 
     private boolean mIsGsm = true;
-    private boolean isLollipopRadio = true;
+    private AudioManager mAudioManager;
 
     public SlteRIL(Context context, int networkMode, int cdmaSubscription) {
         super(context, networkMode, cdmaSubscription, null);
         mQANElements = 6;
+        mAudioManager = (AudioManager)mContext.getSystemService(Context.AUDIO_SERVICE);
     }
 
     public SlteRIL(Context context, int preferredNetworkType,
             int cdmaSubscription, Integer instanceId) {
         super(context, preferredNetworkType, cdmaSubscription, instanceId);
         mQANElements = 6;
+        mAudioManager = (AudioManager)mContext.getSystemService(Context.AUDIO_SERVICE);
     }
 
     @Override
@@ -198,9 +200,6 @@ public class SlteRIL extends RIL {
             voiceSettings = p.readInt();
             dc.isVoice = (0 != voiceSettings);
             if (mIsGsm) {
-                boolean isVideo;
-                if (!isLollipopRadio)
-                    isVideo = (0 != p.readInt());       // Samsung CallDetails
                 int call_type = p.readInt();            // Samsung CallDetails
                 int call_domain = p.readInt();          // Samsung CallDetails
                 String csv = p.readString();            // Samsung CallDetails
@@ -210,11 +209,7 @@ public class SlteRIL extends RIL {
             int np = p.readInt();
             dc.numberPresentation = DriverCall.presentationFromCLIP(np);
             dc.name = p.readString();
-            if (!isLollipopRadio) {
-                dc.namePresentation = p.readInt();
-            } else {
-                dc.namePresentation = DriverCall.presentationFromCLIP(p.readInt());
-            }
+            dc.namePresentation = DriverCall.presentationFromCLIP(p.readInt());
             int uusInfoPresent = p.readInt();
             if (uusInfoPresent == 1) {
                 dc.uusInfo = new UUSInfo();
@@ -333,31 +328,9 @@ public class SlteRIL extends RIL {
         int dataPosition = p.dataPosition(); // save off position within the Parcel
         int response = p.readInt();
 
-        if (isLollipopRadio) {
-            int newResponse = response;
-            switch(response) {
-                case RIL_UNSOL_ON_SS_LL:
-                    newResponse = RIL_UNSOL_ON_SS;
-                    break;
-            }
-            if (newResponse != response) {
-                p.setDataPosition(dataPosition);
-                p.writeInt(newResponse);
-            }
-        }
-
         switch(response) {
-            case RIL_UNSOL_RESPONSE_IMS_NETWORK_STATE_CHANGED:
-                ret = responseVoid(p);
-                break;
-            case RIL_UNSOL_DEVICE_READY_NOTI:
-                ret = responseVoid(p);
-                break;
             case RIL_UNSOL_AM:
                 ret = responseString(p);
-                break;
-            case RIL_UNSOL_WB_AMR_STATE:
-                ret = responseInts(p);
                 break;
             case RIL_UNSOL_RESPONSE_HANDOVER:
                 ret = responseVoid(p);
@@ -365,6 +338,14 @@ public class SlteRIL extends RIL {
             case RIL_UNSOL_SRVCC_HANDOVER:
                 ret = responseVoid(p);
                 break;
+            case RIL_UNSOL_WB_AMR_STATE:
+                ret = responseInts(p);
+                setWbAmr(((int[])ret)[0]);
+                break;
+            case RIL_UNSOL_ON_SS_LL:
+                p.setDataPosition(dataPosition);
+                p.writeInt(RIL_UNSOL_ON_SS);
+                // Do not break
             default:
                 // Rewind the Parcel
                 p.setDataPosition(dataPosition);
@@ -377,29 +358,21 @@ public class SlteRIL extends RIL {
     @Override
     public void
     acceptCall (Message result) {
-        RILRequest rr
-                = RILRequest.obtain(RIL_REQUEST_ANSWER, result);
+        RILRequest rr = RILRequest.obtain(RIL_REQUEST_ANSWER, result);
 
-        if (isLollipopRadio) {
-            rr.mParcel.writeInt(1);
-            rr.mParcel.writeInt(0);
-        }
+        rr.mParcel.writeInt(1);
+        rr.mParcel.writeInt(0);
 
         if (RILJ_LOGD) riljLog(rr.serialString() + "> " + requestToString(rr.mRequest));
 
         send(rr);
     }
 
-
     private void
     dialEmergencyCall(String address, int clirMode, Message result) {
         RILRequest rr;
 
-        if (isLollipopRadio) {
-            rr = RILRequest.obtain(RIL_REQUEST_DIAL_EMERGENCY_LL, result);
-        } else {
-            rr = RILRequest.obtain(RIL_REQUEST_DIAL_EMERGENCY, result);
-        }
+        rr = RILRequest.obtain(RIL_REQUEST_DIAL_EMERGENCY_LL, result);
         rr.mParcel.writeString(address);
         rr.mParcel.writeInt(clirMode);
         rr.mParcel.writeInt(0);        // CallDetails.call_type
@@ -484,4 +457,20 @@ public class SlteRIL extends RIL {
         }
         return response;
     }
+
+    /**
+     * Set audio parameter "wb_amr" for HD-Voice (Wideband AMR).
+     *
+     * @param state: 0 = unsupported, 1 = supported.
+     */
+    private void setWbAmr(int state) {
+        if (state == 1) {
+            Rlog.d(RILJ_LOG_TAG, "setWbAmr(): setting audio parameter - wb_amr=on");
+            mAudioManager.setParameters("wide_voice_enable=true");
+        } else if (state == 0) {
+            Rlog.d(RILJ_LOG_TAG, "setWbAmr(): setting audio parameter - wb_amr=off");
+            mAudioManager.setParameters("wide_voice_enable=false");
+        }
+    }
+
 }
