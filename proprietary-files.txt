@@ -146,17 +146,6 @@ etc/firmware/cpp_firmware_v1_1_1.fw
 etc/firmware/cpp_firmware_v1_1_6.fw
 etc/firmware/cpp_firmware_v1_2_0.fw
 
-# CnE
-bin/cnd
-etc/permissions/com.quicinc.cne.xml
-framework/com.quicinc.cne.jar
-lib/libcnefeatureconfig.so
-vendor/lib/libcne.so
-vendor/lib/libcneapiclient.so
-vendor/lib/libcneconn.so
-vendor/lib/libcneqmiutils.so
-vendor/lib/libvendorconn.so
-
 # CPU
 bin/mpdecision
 bin/thermal-engine
@@ -210,47 +199,25 @@ vendor/lib/libgeofence.so
 vendor/lib/libizat_core.so
 vendor/lib/liblbs_core.so
 
-# HDCP
-bin/insthk
-etc/srm.bin
-#lib/libhdcp2.so
-
 # IPC router security
-bin/irsc_util
 etc/sec_config
+bin/irsc_util
 
 # IPv6 Tethering
 bin/radish
 
-# Keystore stuffs
-vendor/lib/lib-sec-disp.so
-vendor/lib/libSecureUILib.so
-vendor/lib/libStDrvInt.so
-vendor/lib/libsecureui.so
-vendor/lib/libsecureui_svcsock.so
-vendor/lib/libsecureuisvc_jni.so
-
-# Listen service
--vendor/lib/liblisten.so
-vendor/lib/liblistenhardware.so
-vendor/lib/liblistenjni.so
-vendor/lib/liblistensoundmodel.so
-
 # Media
+vendor/lib/libDivxDrm.so
 -vendor/lib/libHevcSwDecoder.so
 vendor/lib/libI420colorconvert.so
 vendor/lib/libmm-color-convertor.so
+vendor/lib/libmmosal.so
 vendor/lib/libOmxAacDec.so
 vendor/lib/libOmxAmrwbplusDec.so
 vendor/lib/libOmxEvrcDec.so
 vendor/lib/libOmxQcelp13Dec.so
 vendor/lib/libOmxWmaDec.so
 vendor/lib/libSHIMDivxDrm.so
-
-# MobiCore
-#bin/mcDriverDaemon
-#bin/mcStarter
-#lib/libMcClient.so
 
 # NFC
 vendor/firmware/libpn547_fw.so
@@ -264,6 +231,7 @@ vendor/lib/libdisp-aba.so
 vendor/lib/libmm-abl-oem.so
 
 # Qualcomm framework
+lib/libmdmdetect.so
 vendor/lib/libdiag.so
 vendor/lib/libdsutils.so
 vendor/lib/libidl.so
@@ -282,17 +250,11 @@ bin/ks
 bin/netmgrd
 bin/qcks
 bin/qmuxd
-#bin/qmiproxy
-#bin/qosmgr
-#bin/qrngd
 bin/rfs_access
 bin/rild
 bin/rmt_storage
-bin/rmnetcli
-#etc/qosmgr_rules.xml
 lib/libreference-ril.so
 lib/libril.so
-lib/librmnetctl.so
 lib/libsec-ril.so
 lib/libsecnativefeature.so
 lib/libsecril-client.so
@@ -313,7 +275,7 @@ lib/libyasalgo.so
 -app/TimeService/TimeService.apk
 bin/time_daemon
 -vendor/lib/libtime_genoff.so
--vendor/lib/libTimeService.so
+vendor/lib/libTimeService.so
 
 # Wi-Fi
 etc/wifi/bcmdhd_apsta.bin
@@ -324,44 +286,3 @@ etc/wifi/cred.conf
 etc/wifi/nvram_mfg.txt
 etc/wifi/nvram_net.txt
 etc/wifi/wpa_supplicant.conf
-
-
-#################
-#vendor/lib/libbtnv.so
-#vendor/lib/libCommandSvc.so
-#vendor/lib/libdpencalib.so
-#vendor/lib/libdpmframework.so
-#vendor/lib/libdpmnsrm.so
-#vendor/lib/libepdsp.so
-#vendor/lib/libgesadapter.so
-#vendor/lib/libgessockadapter.so
-#vendor/lib/libgessyncsockadapter.so
-#vendor/lib/libmasc.so
-#vendor/lib/libmmgesture-bus2.so
-#vendor/lib/libmm-hdcpmgr.so
-#vendor/lib/libmmhttpstack.so
-#vendor/lib/libmmiipstreammmihttp.so
-#vendor/lib/libmmipstreamaal.so
-#vendor/lib/libmmipstreamnetwork.so
-#vendor/lib/libmmipstreamsourcehttp.so
-#vendor/lib/libmmipstreamutils.so
-#vendor/lib/libmmQSM.so
-#vendor/lib/libNimsWrap.so
-#vendor/lib/liboemcrypto.so
-#vendor/lib/libppl.so
-#vendor/lib/libprdrmdecrypt.so
-#vendor/lib/libprofiler_msmadc.so
-#vendor/lib/libqcgesture.so
-#vendor/lib/libqcsyncgesture.so
-#vendor/lib/librmp.so
-#vendor/lib/libSSEPKCS11.so
-#vendor/lib/libsubsystem_control.so
-#vendor/lib/libSubSystemShutdown.so
-#vendor/lib/libsyncgesadapter.so
-#vendor/lib/libtzdrmgenprov.so
-#vendor/lib/libtzplayready.so
-#vendor/lib/libual.so
-#vendor/lib/libualutil.so
-#vendor/lib/libusutils.so
-#vendor/lib/libVenusMbiConv.so
-#vendor/lib/libwqe.so
