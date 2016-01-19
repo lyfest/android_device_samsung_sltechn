@@ -29,6 +29,8 @@ LOCAL_CFLAGS += \
 
 LOCAL_LDFLAGS += -Wl,--export-dynamic
 
+LOCAL_CLANG := false
+
 ## Includes
 LOCAL_C_INCLUDES:= \
     $(LOCAL_PATH)/../platform_lib_abstractions

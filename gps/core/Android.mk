@@ -27,6 +27,8 @@ LOCAL_CFLAGS += \
      -fno-short-enums \
      -D_ANDROID_
 
+LOCAL_CLANG := false
+
 LOCAL_C_INCLUDES:= \
     $(TARGET_OUT_HEADERS)/gps.utils
 
