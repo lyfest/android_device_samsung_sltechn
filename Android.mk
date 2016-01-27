@@ -16,6 +16,6 @@
 
 LOCAL_PATH := $(call my-dir)
 
-ifeq ($(TARGET_DEVICE),sltecan)
+ifeq ($(TARGET_DEVICE),sltechn)
 include $(call all-subdir-makefiles,$(LOCAL_PATH))
 endif
