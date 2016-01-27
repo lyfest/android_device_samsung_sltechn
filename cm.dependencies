@@ -4,7 +4,7 @@
     "target_path": "device/samsung/msm8974-common"
   },
   {
-    "repository": "android_kernel_samsung_sltecan",
+    "repository": "android_kernel_samsung_sltechn",
     "target_path": "kernel/samsung/sltecan"
   },
   {
