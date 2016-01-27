@@ -15,11 +15,11 @@
 # inherit from common msm8974
 -include device/samsung/msm8974-common/BoardConfigCommon.mk
 
-LOCAL_PATH := device/samsung/sltecan
+LOCAL_PATH := device/samsung/sltechn
 
 TARGET_SPECIFIC_HEADER_PATH := $(LOCAL_PATH)/include
 
-TARGET_OTA_ASSERT_DEVICE := sltecan,slteatt,SM-G850W,SM-G850A
+TARGET_OTA_ASSERT_DEVICE := sltech,SM-G8508S
 
 # Bootloader
 TARGET_BOOTLOADER_BOARD_NAME := MSM8974
@@ -29,21 +29,22 @@ USE_CLANG_PLATFORM_BUILD := true
 
 # Kernel
 BOARD_KERNEL_BASE := 0x00000000
-BOARD_KERNEL_CMDLINE := console=null androidboot.hardware=qcom androidboot.selinux=permissive user_debug=23 msm_rtb.filter=0x37 ehci-hcd.park=3
+BOARD_KERNEL_CMDLINE := console=null androidboot.hardware=qcom androidboot.selinux=permissive user_debug=31 msm_rtb.filter=0x37 ehci-hcd.park=3
 BOARD_KERNEL_PAGESIZE := 2048
 BOARD_KERNEL_SEPARATED_DT := true
 BOARD_MKBOOTIMG_ARGS := --ramdisk_offset 0x02000000 --tags_offset 0x01e00000
+#to be correct
 TARGET_KERNEL_CONFIG := cm_msm8974_sec_defconfig
 TARGET_KERNEL_VARIANT_CONFIG := cm_msm8974pro_sec_slte_can_defconfig
 TARGET_KERNEL_SELINUX_CONFIG := cm_selinux_defconfig
-TARGET_KERNEL_SOURCE := kernel/samsung/sltecan
+TARGET_KERNEL_SOURCE := kernel/samsung/sltechn
 
 
 # Audio
 BOARD_USES_ALSA_AUDIO := true
 
 # Bluetooth
-BOARD_BLUEDROID_VENDOR_CONF := $(LOCAL_PATH)/bluetooth/vnd_sltecan.txt
+BOARD_BLUEDROID_VENDOR_CONF := $(LOCAL_PATH)/bluetooth/vnd_sltecan.txt#to be correct
 BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := $(LOCAL_PATH)/bluetooth
 BOARD_BLUETOOTH_USES_HCIATTACH_PROPERTY := false
 BOARD_HAVE_BLUETOOTH_BCM := true
@@ -53,12 +54,12 @@ BOARD_USES_LEGACY_MMAP := true
 USE_DEVICE_SPECIFIC_CAMERA := true
 
 # CMHW
-BOARD_HARDWARE_CLASS += device/samsung/sltecan/cmhw
+BOARD_HARDWARE_CLASS += device/samsung/sltechn/cmhw
 BOARD_HARDWARE_CLASS += hardware/samsung/cmhw
 
 # GPS
 TARGET_NO_RPC := true
-TARGET_GPS_HAL_PATH := device/samsung/sltecan/gps
+TARGET_GPS_HAL_PATH := device/samsung/sltechn/gps
 
 # Lights
 TARGET_PROVIDES_LIBLIGHT := true
@@ -80,13 +81,13 @@ TARGET_POWERHAL_SET_INTERACTIVE_EXT := $(LOCAL_PATH)/power/power_ext.c
 TARGET_POWERHAL_VARIANT := qcom
 
 # Radio
-BOARD_RIL_CLASS := ../../../device/samsung/sltecan/ril
+BOARD_RIL_CLASS := ../../../device/samsung/sltechn/ril
 
 #TARGET_RECOVERY := twrp
 # Recovery
 ifneq ($(TARGET_RECOVERY),twrp)
 TARGET_RECOVERY_FSTAB := $(LOCAL_PATH)/rootdir/etc/fstab.qcom
-BOARD_CUSTOM_RECOVERY_KEYMAPPING := ../../device/samsung/sltecan/recovery/recovery_keys.c
+BOARD_CUSTOM_RECOVERY_KEYMAPPING := ../../device/samsung/sltechn/recovery/recovery_keys.c
 endif
 BOARD_USE_CUSTOM_RECOVERY_FONT := \"roboto_23x41.h\"
 BOARD_HAS_LARGE_FILESYSTEM := true
@@ -138,7 +139,7 @@ endif
 -include device/qcom/sepolicy/sepolicy.mk
 
 BOARD_SEPOLICY_DIRS += \
-    device/samsung/sltecan/sepolicy
+    device/samsung/sltechn/sepolicy
 
 # Wifi
 BOARD_HAVE_SAMSUNG_WIFI := true
@@ -156,4 +157,4 @@ WIFI_DRIVER_FW_PATH_STA     := "/system/etc/wifi/bcmdhd_sta.bin"
 WIFI_DRIVER_FW_PATH_AP      := "/system/etc/wifi/bcmdhd_apsta.bin"
 
 # inherit from the proprietary version
--include vendor/samsung/sltecan/BoardConfigVendor.mk
+-include vendor/samsung/sltechn/BoardConfigVendor.mk
