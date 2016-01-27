@@ -1,6 +1,6 @@
 Copyright 2015 - The CyanogenMod Project
 
-Device configuration for Samsung Galaxy Alpha (S801) SM-G850W.
+Device configuration for Samsung Galaxy Alpha (S801) SM-G8508S.
 
 WORK IN PROGRESS. WILL EAT YOUR CAT.
 ------------------------------------------------------------------
@@ -19,8 +19,8 @@ WORK IN PROGRESS. WILL EAT YOUR CAT.
 
     <project name="CyanogenMod/android_external_stlport" path="external/stlport" remote="github" />
 
-    <project name="kyasu/android_device_samsung_sltecan" path="device/samsung/sltecan" remote="github" />
-    <project name="kyasu/android_kernel_samsung_sltecan" path="kernel/samsung/sltecan" remote="github" />
-    <project name="kyasu/android_vendor_samsung_sltecan" path="vendor/samsung/sltecan" remote="github" />
+    <project name="lyfest/android_device_samsung_sltechn" path="device/samsung/sltechn" remote="github" />
+    <project name="lyfest/android_kernel_samsung_sltechn" path="kernel/samsung/sltechn" remote="github" />
+    <project name="lyfest/android_vendor_samsung_sltechn" path="vendor/samsung/sltechn" remote="github" />
 
   </manifest>
